@@ -21,8 +21,10 @@ const config = {
 }
 
 const colors={
-  gray:'#616161',
-  dark: '#1e1e1e'
+  gray:{
+    light: '#616161',
+    dark: '#1e1e1e'
+  }
 }
 
 const theme = extendTheme({config, styles, colors})
