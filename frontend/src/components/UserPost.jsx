@@ -5,9 +5,24 @@ import { Text,Image } from "@chakra-ui/react"
 import {BsThreeDots} from "react-icons/bs"
 import Actions from "./Actions";
 import { useState } from "react";
+import { MenuButton,MenuList,Menu,Portal,MenuItem } from "@chakra-ui/react"
+import { useToast } from "@chakra-ui/react"
 
 const UserPost = ({postImg,postTitle,likes,replies}) => {
 
+    const toast = useToast()
+    const copyURL=()=>{
+        const currentURL = window.location.href
+        navigator.clipboard.writeText(currentURL).then(()=>{
+            toast({
+                description:"Post link copied",
+                status:"success",
+                duration:2000,
+                isClosable:true,
+                position:"top-right",
+            })
+        })
+    }
     const [liked,setLiked]=useState(false)
 
     return (
@@ -52,9 +67,24 @@ const UserPost = ({postImg,postTitle,likes,replies}) => {
                         <Text fontSize={"sm"} fontWeight={"bold"}>markzuckerberg</Text>
                         <Image src ="/verified.png" w={4} h={4} ml={1}></Image>
                     </Flex>
-                    <Flex gap={4} alignItems={"center"}>
+                    <Flex gap={4} alignItems={"center"} onClick={(e) => e.preventDefault()}>
                         <Text fontSize={"sm"} color={"gray.light"}>1d</Text>
-                        <BsThreeDots/>
+                        <Flex>
+                            <Box>
+                                <Menu>
+                                    <MenuButton>
+                                    <BsThreeDots cursor={"pointer"}/>
+                                    </MenuButton>
+                                    <Portal>
+                                        <MenuList bg={"gray.dark"}>
+                                            <MenuItem bg={"gray.dark"} onClick={copyURL}>
+                                                Copy Link
+                                            </MenuItem>
+                                        </MenuList>
+                                    </Portal>
+                                </Menu>
+                            </Box>
+                        </Flex>
                     </Flex>
                 </Flex>
 
@@ -70,7 +100,7 @@ const UserPost = ({postImg,postTitle,likes,replies}) => {
                 <Flex gap = {2} alignItems={"center"}>
                     <Text color={"gray.light"} fontSize={"sm"}>{replies} replies</Text>
                     <Box w={0.5} h={0.5} bg={"gray.light"} borderRadius={"full"}></Box>
-                    <Text color={"gray.light"} fontSize={"sm"}>{likes} likes</Text>
+                    <Text color={"gray.light"} fontSize={"sm"}>{likes + ( liked ? 1 : 0 )} likes</Text>
                 </Flex>
             </Flex>
         </Flex>
