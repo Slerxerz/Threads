@@ -6,6 +6,7 @@ import {useState} from 'react'
 import { MenuButton,MenuList,Menu,Portal,MenuItem } from "@chakra-ui/react"
 import { useToast } from "@chakra-ui/react"
 import { Divider, Button } from "@chakra-ui/react";
+import Comment from "../components/Comment";
 
 const PostPage = () => {
     const toast = useToast()
@@ -68,11 +69,36 @@ return (
         </Flex>
         <Divider my={4}/>
         <Flex justifyContent={"space-between"}>
-            <Flex></Flex>
+            <Flex gap={2} alignItems={"center"}>
+                <Text fontSize={"2xl"}>👋</Text>
+                <Text color={"gray.light"}>Get the app to like, reply.</Text>
+            </Flex>
             <Button>
                 Get
             </Button>
         </Flex>
+        <Divider my={3}></Divider>
+        <Comment
+            comment="Looks really good."
+            createdAt="2d"
+            likes={100}
+            username="johndoe"
+            userAvatar="https://bit.ly/dan-abramov"
+        />
+        <Comment
+            comment="Wow this is amazing."
+            createdAt="1d"
+            likes={133}
+            username="codebeast"
+            userAvatar="https://bit.ly/code-beast"
+        />
+        <Comment
+            comment="Now we're talking."
+            createdAt="1d"
+            likes={32}
+            username="kentdodds"
+            userAvatar="https://bit.ly/kent-c-dodds"
+        />
     </>
     );
 };
