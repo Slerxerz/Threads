@@ -66,7 +66,7 @@ const loginUser = async (req,res)=>{
 const logoutUser = async(req,res)=>{
 
     try {
-        res.cookie("token","",{maxAge:1})
+        res.clearCookie("token")
         res.status(200).json({message:"User Logged Out Successfully"})
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -74,4 +74,33 @@ const logoutUser = async(req,res)=>{
     }
 }
 
-export {signupUser,loginUser,logoutUser} 
+const followUnfollowUser = async(req,res)=>{
+    try 
+    {    const {id} = req.params;
+        const userToModify = await User.findById(id);
+        const currentUser = await User.findById(req.user._id)
+
+        if(id==req.user._id) return res.status(400).json({message:"You cannot follow/unfollow yourself"});
+
+        if (!userToModify || !currentUser) return res.status(404).json({message:'User Not Found'});
+
+        const isFollowing = currentUser.following.includes(id)
+
+        if (isFollowing){
+            //unfollow user
+            // Modify currentUser following and modify followers of userToModify
+            await User.findByIdAndUpdate(req.user._id,{$pull:{following:id}})
+            await User.findByIdAndUpdate(id,{$pull:{followers:req.user._id}})
+        } else {
+            //Follow User
+            // Modify currentUser following and modify followers of userToModify
+            await User.findByIdAndUpdate(req.user._id,{$push:{following:id}})
+            await User.findByIdAndUpdate(id,{$push:{followers:req.user._id}})
+        }
+        res.status(200).json({message:isFollowing?"Unfollowed Successfully":"Followed Successfully"})
+    } catch (error) {
+        res.status(500).json({message: error.message});
+        console.log("Error in Follow/Unfollow User: " + error.message);}
+}
+
+export {signupUser,loginUser,logoutUser,followUnfollowUser} 
