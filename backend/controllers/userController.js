@@ -36,4 +36,30 @@ const signupUser = async (req,res)=>{
     }
 }
 
-export {signupUser} 
+const loginUser = async (req,res)=>{
+    try {
+        const {username,password} = req.body
+        if (username=='' || password==''){
+            return res.status(400).json({message:"Fill up all the required fields"})
+        }
+        const user = await User.findOne({username})
+        if (!user){
+            return res.status(400).json({message:"User does not exist"})
+        }
+        const isMatch = await bcrypt.compare(password,user.password)
+        if (!isMatch){
+            return res.status(400).json({message:"Invalid Credentials"})
+        }
+        generateTokenAndSetCookie(user._id,res)
+        res.status(200).json({
+            _id:user._id,
+            name:user.name,
+            email:user.email,
+            username:user.username
+        })
+    } catch (error) {
+        res.status(500).json({message: error.message});
+        console.log("Error in Login User: " + error.message);
+    }
+}
+export {signupUser,loginUser} 
