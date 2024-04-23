@@ -14,18 +14,18 @@ const PostSchema = new mongoose.Schema({
         type:String,
     },
     likes:{
-        type:Number,
-        default:0
+        //array of user id's
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"User",
+        default:[]
     },
     replies:[{
         userID:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:"User",
-            required:true
+            ref:"User"
         },
         text:{
-            type:String,
-            required:true
+            type:String
         },
         userProfilePicture:{
             type:String
