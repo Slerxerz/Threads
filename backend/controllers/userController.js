@@ -80,7 +80,7 @@ const followUnfollowUser = async(req,res)=>{
         const userToModify = await User.findById(id);
         const currentUser = await User.findById(req.user._id)
 
-        if(id==req.user._id) return res.status(400).json({message:"You cannot follow/unfollow yourself"});
+        if(id===req.user._id.toString()) return res.status(400).json({message:"You cannot follow/unfollow yourself"});
 
         if (!userToModify || !currentUser) return res.status(404).json({message:'User Not Found'});
 
@@ -103,4 +103,35 @@ const followUnfollowUser = async(req,res)=>{
         console.log("Error in Follow/Unfollow User: " + error.message);}
 }
 
-export {signupUser,loginUser,logoutUser,followUnfollowUser} 
+const updateUser = async (req, res) => {
+
+    const {username,name,email,password,profilePicture,bio} = req.body
+    const userId = req.user._id
+    try {
+        let user = await User.findById(userId)
+        if (!user) return res.status(404).json({message:"User Not Found"})
+
+        if (req.params.id!== userId.toString())
+            return res.status(404).json({message:"You cannot update other users profile"}) 
+
+        if(password){
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(password,salt)
+            user.password = hashedPassword
+        }
+
+        user.name = name || user.name
+        user.username = username || user.username
+        user.email = email || user.email
+        user.profilePicture = profilePicture || user.profilePicture
+        user.bio = bio || user.bio
+
+        user = await user.save()
+        res.status(200).json({message:"Profile Updated Successfully",user})
+    } catch (error) {
+        res.status(500).json({message: error.message});
+        console.log("Error in Update User: " + error.message);
+    }
+}
+
+export {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser} 
