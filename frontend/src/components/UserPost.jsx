@@ -17,7 +17,7 @@ const UserPost = ({postImg,postTitle,likes,replies}) => {
             toast({
                 description:"Post link copied",
                 status:"success",
-                duration:2000,
+                duration:3000,
                 isClosable:true,
                 position:"top-right",
             })

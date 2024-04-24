@@ -6,24 +6,24 @@ const createPost= async (req, res) => {
         const {postedBy,text,img}  = req.body
         if (!postedBy || !text){
             return res.status(400).json({
-                message: "Please fill all the fields"
+                error: "Please fill all the fields"
             })
         }
         const user = await User.findById(postedBy)
         if (!user) {
             return res.status(404).json({
-                message: "User not found"
+                error: "User not found"
             })
         }
         if (user._id.toString() !== req.user._id.toString()) {
             return res.status(401).json({
-                message: "You are not authorized to perform this action"
+                error: "You are not authorized to perform this action"
             })
         }
         const maxLength = 500
         if (text.length > maxLength) {
             return res.status(400).json({
-                message: `Text should be less than ${maxLength} characters`
+                error: `Text should be less than ${maxLength} characters`
             })
         }
         const newPost = new Post({postedBy,text,img})
@@ -34,7 +34,7 @@ const createPost= async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
@@ -45,7 +45,7 @@ const getPost = async (req, res) => {
         const post = await Post.findById(req.params.id)
         if (!post) {
             return res.status(404).json({
-                message: "Post not found"
+                error: "Post not found"
             })
         }
         res.status(200).json({
@@ -53,7 +53,7 @@ const getPost = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
@@ -64,12 +64,12 @@ const deletePost = async (req, res) => {
         const post = await Post.findById(req.params.id)
         if (!post) {
             return res.status(404).json({
-                message: "Post not found"
+                error: "Post not found"
             })
         }
         if (post.postedBy.toString()!== req.user._id.toString()) {
             return res.status(401).json({
-                message: "You are not authorized to perform this action"
+                error: "You are not authorized to perform this action"
             })
         }
         await Post.findByIdAndDelete(req.params.id)
@@ -78,7 +78,7 @@ const deletePost = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
@@ -91,7 +91,7 @@ const likeUnlikePost = async (req, res) => {
         const post = await Post.findById(postId)
         if (!post) {
             return res.status(404).json({
-                message: "Post not found"
+                error: "Post not found"
             })
         }
         const isLiked = post.likes.includes(userId)
@@ -106,7 +106,7 @@ const likeUnlikePost = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
@@ -122,14 +122,14 @@ const replyPost = async (req, res) => {
 
         if (!text){
             return res.status(400).json({
-                message: "Text field is required"
+                error: "Text field is required"
             })
         }
 
         const post = await Post.findById(postId)
         if (!post) {
             return res.status(404).json({
-                message: "Post not found"
+                error: "Post not found"
             })
         }
 
@@ -143,7 +143,7 @@ const replyPost = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
@@ -155,7 +155,7 @@ const getFeedPosts = async (req, res) => {
         const user = await User.findById(userId)
         if (!user) {
             return res.status(404).json({
-                message: "User not found"
+                error: "User not found"
             })
         }
         const following = user.following
@@ -165,7 +165,7 @@ const getFeedPosts = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: error.message
+            error: error.message
         })
         console.log(error)
     }
