@@ -17,10 +17,41 @@ import {
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../atoms/authAtom';
+import useShowToast from '../hooks/useShowToast';
+import userAtom from '../atoms/userAtom';
   
   export default function LoginCard() {
+    const showToast = useShowToast()
     const [showPassword, setShowPassword] = useState(false);
     const setAuthScreen = useSetRecoilState(authScreenAtom)
+    const setUser = useSetRecoilState(userAtom)
+
+    const [inputs,setInputs] = useState({
+      username:'',
+      password:''
+    });
+
+    const handleLogin = async () => {
+      try {
+        const res = await fetch('/api/users/login',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body:JSON.stringify(inputs)
+        })
+        const data = await res.json()
+        if(data.error) showToast("Error",data.error,"error")
+        else{
+          localStorage.setItem("User-Threads",JSON.stringify(data))
+          setUser(data)
+          showToast("Success","Logged in successfully","success")
+        }
+        }
+      catch (error) {
+        showToast("Error",error,"error")
+      }
+    }
     return (
       <Flex
         align={'center'}
@@ -45,12 +76,16 @@ import authScreenAtom from '../atoms/authAtom';
             <Stack spacing={4}>
               <FormControl id="username" isRequired>
                 <FormLabel>Username</FormLabel>
-                <Input type="text" />
+                <Input type="text" 
+                value={inputs.username}
+                onChange={(e)=>setInputs({...inputs,username:e.target.value})}/>
               </FormControl>
               <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
-                  <Input type={showPassword ? 'text' : 'password'} />
+                  <Input type={showPassword ? 'text' : 'password'} 
+                  value={inputs.password}
+                  onChange={(e)=>setInputs({...inputs,password:e.target.value})}/>
                   <InputRightElement h={'full'}>
                     <Button
                       variant={'ghost'}
@@ -70,7 +105,9 @@ import authScreenAtom from '../atoms/authAtom';
                   color={'white'}
                   _hover={{
                     bg: useColorModeValue('gray.light', 'black')
-                  }}>
+                  }}
+                  onClick={handleLogin}
+                  >
                   Login
                 </Button>
               </Stack>

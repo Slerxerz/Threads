@@ -52,7 +52,7 @@ import userAtom from '../atoms/userAtom';
             localStorage.setItem("User-Threads",JSON.stringify(data))
             setUser(data)
         } catch (error) {
-            console.log(error); 
+            showToast("Error",error,"error") 
         }
     }
     
