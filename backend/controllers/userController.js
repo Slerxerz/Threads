@@ -157,7 +157,7 @@ const userProfile = async (req,res)=>{
     const user = await User.findOne({username}).select("-password").select("-updatedAt").select("-createdAt").select("-email") 
     try {
         if (!user) return res.status(404).json({error:"User Not Found"})
-        res.status(200).json({user})
+        res.status(200).json(user)
     } catch (error) {
         res.status(500).json({error: error.message});
         console.log("Error in User Profile: " + error.message);
