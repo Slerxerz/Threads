@@ -1,6 +1,7 @@
 import User from "../models/userModel.js"
 import bcrypt from "bcryptjs"
 import generateTokenAndSetCookie from "../utilities/helpers/generateTokenAndSetCookie.js"
+import {v2 as cloudinary} from "cloudinary"
 
 const signupUser = async (req,res)=>{
     try {
@@ -109,7 +110,8 @@ const followUnfollowUser = async(req,res)=>{
 
 const updateUser = async (req, res) => {
 
-    const {username,name,email,password,profilePicture,bio} = req.body
+    const {username,name,email,password,bio} = req.body
+    let {profilePicture} = req.body
     const userId = req.user._id
     try {
         let user = await User.findById(userId)
@@ -123,6 +125,14 @@ const updateUser = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password,salt)
             user.password = hashedPassword
         }
+        
+        if(profilePicture){
+            if (user.profilePicture){
+                await cloudinary.uploader.destroy(user.profilePicture.split("/").pop().split(".")[0])
+            }
+            const uploadResponse = await cloudinary.uploader.upload(profilePicture)
+            profilePicture = uploadResponse.secure_url
+        }
 
         user.name = name || user.name
         user.username = username || user.username
@@ -131,7 +141,11 @@ const updateUser = async (req, res) => {
         user.bio = bio || user.bio
 
         user = await user.save()
-        res.status(200).json({message:"Profile Updated Successfully",user})
+
+        //password should not be passed as a response
+        user.password = null
+
+        res.status(200).json(user)
     } catch (error) {
         res.status(500).json({error: error.message});
         console.log("Error in Update User: " + error.message);

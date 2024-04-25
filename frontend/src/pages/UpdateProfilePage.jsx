@@ -14,6 +14,7 @@ import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import usePreviewImage from '../hooks/usePreviewImage';
+import useShowToast from '../hooks/useShowToast';
   
   const UpdateProfilePage=()=> {
     const [user,setUser]= useRecoilState(userAtom)
@@ -25,8 +26,32 @@ import usePreviewImage from '../hooks/usePreviewImage';
         password:'',
     })
     const fileRef = useRef(null)
+    const showToast = useShowToast()
     const {handleImageChange,imageURL} = usePreviewImage()
+    const handleSubmit= async(e)=>{
+        e.preventDefault()
+        try {
+            const res = await fetch(`/api/users/update/${user._id}`,{
+                method:'PUT',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({...inputs,profilePicture:imageURL})
+            })
+            const data = await res.json()
+            if (data.error){
+                showToast("Error",data.error,"error")
+            }else{
+                showToast("Success","Profile Updated Successfully","success")
+                setUser(data)
+                localStorage.setItem('User-Threads',JSON.stringify(data))
+            }
+        } catch (error) {
+            showToast("Error",error,"error")
+        }
+    }
     return (
+    <form onSubmit={handleSubmit}>
       <Flex
         align={'center'}
         justify={'center'}
@@ -53,7 +78,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
               </Center>
             </Stack>
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Full Name</FormLabel>
             <Input
               placeholder="John Doe"
@@ -63,7 +88,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
               type="text"
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Username</FormLabel>
             <Input
               placeholder="johndoe"
@@ -73,7 +98,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
               type="text"
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Email address</FormLabel>
             <Input
               placeholder="your-email@example.com"
@@ -83,7 +108,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
               type="email"
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Bio</FormLabel>
             <Input
               placeholder="Your Bio"
@@ -93,7 +118,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
               type="text"
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Password</FormLabel>
             <Input
               placeholder="Password"
@@ -119,12 +144,14 @@ import usePreviewImage from '../hooks/usePreviewImage';
               w="full"
               _hover={{
                 bg: 'green.500',
-              }}>
+              }}
+              type='submit'>
               Submit
             </Button>
           </Stack>
         </Stack>
-      </Flex>
+      </Flex>     
+    </form>
     );
   }
 export default UpdateProfilePage

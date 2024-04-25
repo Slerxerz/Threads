@@ -20,7 +20,7 @@ router.post('/logout',logoutUser);
 router.get('/follow/:id', protectRoute, followUnfollowUser);
 
 //update route
-router.post('/update/:id', protectRoute, updateUser);
+router.put('/update/:id', protectRoute, updateUser);
 
 
 export default router
