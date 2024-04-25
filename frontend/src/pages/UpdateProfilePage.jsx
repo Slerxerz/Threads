@@ -25,7 +25,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
         password:'',
     })
     const fileRef = useRef(null)
-    const {handleImageChange} = usePreviewImage
+    const {handleImageChange,imageURL} = usePreviewImage()
     return (
       <Flex
         align={'center'}
@@ -45,7 +45,7 @@ import usePreviewImage from '../hooks/usePreviewImage';
           <FormControl id="userName">
             <Stack direction={['column', 'row']} spacing={6}>
               <Center>
-                <Avatar size="xl" boxShadow={"md"} src={user.profilePicture}/>
+                <Avatar size="xl" boxShadow={"md"} src={imageURL || user.profilePicture}/>
               </Center>
               <Center w="full">
                 <Button w="full" onClick={()=>fileRef.current.click()}>Change Avatar</Button>
