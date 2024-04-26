@@ -25,6 +25,7 @@ import userAtom from '../atoms/userAtom';
     const [showPassword, setShowPassword] = useState(false);
     const setAuthScreen = useSetRecoilState(authScreenAtom)
     const setUser = useSetRecoilState(userAtom)
+    const [loading, setLoading] = useState(true);
 
     const [inputs,setInputs] = useState({
       username:'',
@@ -32,6 +33,7 @@ import userAtom from '../atoms/userAtom';
     });
 
     const handleLogin = async () => {
+      setLoading(true)
       try {
         const res = await fetch('/api/users/login',{
           method: 'POST',
@@ -50,6 +52,8 @@ import userAtom from '../atoms/userAtom';
         }
       catch (error) {
         showToast("Error",error,"error")
+      }finally{
+        setLoading(false)
       }
     }
     return (
@@ -107,6 +111,7 @@ import userAtom from '../atoms/userAtom';
                     bg: useColorModeValue('gray.light', 'black')
                   }}
                   onClick={handleLogin}
+                  isLoading={loading}
                   >
                   Login
                 </Button>
