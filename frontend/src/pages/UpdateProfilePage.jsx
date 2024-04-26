@@ -15,6 +15,7 @@ import { useRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import usePreviewImage from '../hooks/usePreviewImage';
 import useShowToast from '../hooks/useShowToast';
+import { useNavigate } from 'react-router-dom';
   
   const UpdateProfilePage=()=> {
     const [user,setUser]= useRecoilState(userAtom)
@@ -28,7 +29,16 @@ import useShowToast from '../hooks/useShowToast';
     const fileRef = useRef(null)
     const showToast = useShowToast()
     const {handleImageChange,imageURL} = usePreviewImage()
+    const [updating,setUpdating] = useState(false)
+    
+    const navigate = useNavigate();
+    const handleCancel = () => {
+      navigate(-1); // Navigate back to the previous page
+    };
+
     const handleSubmit= async(e)=>{
+        if(updating) return
+        setUpdating(true)
         e.preventDefault()
         try {
             const res = await fetch(`/api/users/update/${user._id}`,{
@@ -48,6 +58,8 @@ import useShowToast from '../hooks/useShowToast';
             }
         } catch (error) {
             showToast("Error",error,"error")
+        } finally {
+          setUpdating(false)
         }
     }
     return (
@@ -135,7 +147,8 @@ import useShowToast from '../hooks/useShowToast';
               w="full"
               _hover={{
                 bg: 'red.500',
-              }}>
+              }}
+              onClick={handleCancel}>
               Cancel
             </Button>
             <Button
@@ -145,7 +158,8 @@ import useShowToast from '../hooks/useShowToast';
               _hover={{
                 bg: 'green.500',
               }}
-              type='submit'>
+              type='submit'
+              isLoading={updating}>
               Submit
             </Button>
           </Stack>

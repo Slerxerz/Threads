@@ -11,24 +11,39 @@ const UserHeader = ({user}) => {
     const showtoast = useShowToast()
     const currentUser = useRecoilValue(userAtom) // this is the user that logged in 
     const [following,setFollowing] = useState(user.followers.includes(currentUser._id))
+    const [updating,setUpdating] = useState(false)
 
     const handleFollowUnfollow = async() =>{
+        if(!currentUser){
+            showtoast("Error","Please login to follow","error")
+            return
+        }
+        if(updating) return
+        setUpdating(true)
         try {
             const res = await fetch(`/api/users/follow/${user._id}`,{
-                method:"POST",
+                method:"GET",
                 headers:{
                     "Content-Type":"application/json"
-                },
-                body:JSON.stringify()
+                }
             })
             const data = await res.json()
             if(data.error){
-                showtoast("Error",error,"error")
+                showtoast("Error",data.error,"error")
                 return
             }
-            console.log(data)
+            if(following){
+                showtoast("Success", `Unfollowed ${user.name}`,"success")
+                user.followers.pop() //simulate removing followers, only in the client side
+            } else {
+                showtoast("Success", `Followed ${user.name}`,"success")
+                user.followers.push(currentUser._id) //simulate adding followers, only in the client side
+            }
+            setFollowing(!following)
         } catch (error) {
             showtoast("Error",error,"error")
+        } finally {
+            setUpdating(false)
         }
     }
 
@@ -76,7 +91,7 @@ const UserHeader = ({user}) => {
 				</Link>
 	    )}
         {currentUser._id !== user._id && (
-				<Button size={"sm"} onClick={handleFollowUnfollow} >
+				<Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
 					{following ? "Unfollow" : "Follow"}
 				</Button>
 		)}
