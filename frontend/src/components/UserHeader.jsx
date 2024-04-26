@@ -87,11 +87,11 @@ const UserHeader = ({user}) => {
         <Text>{user.bio}</Text>
         {currentUser._id === user._id && (
 				<Link as={RouterLink} to='/update'>
-					<Button size={"sm"}>Update Profile</Button>
+					<Button size={"sm"} bg={useColorModeValue("gray.300","gray.dark")}>Update Profile</Button>
 				</Link>
 	    )}
         {currentUser._id !== user._id && (
-				<Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating}>
+				<Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating} bg={useColorModeValue("gray.300","gray.dark")}>
 					{following ? "Unfollow" : "Follow"}
 				</Button>
 		)}
