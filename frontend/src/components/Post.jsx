@@ -1,25 +1,24 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Box, Flex} from "@chakra-ui/layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Text,Image } from "@chakra-ui/react"
-import {BsThreeDots} from "react-icons/bs"
 import Actions from "./Actions";
 import { useEffect, useState } from "react";
-import { MenuButton,MenuList,Menu,Portal,MenuItem } from "@chakra-ui/react"
-import { useToast } from "@chakra-ui/react"
 import useShowToast from "../hooks/useShowToast";
+import {formatDistanceToNow} from "date-fns"
+
 
 const Post = ({post,postedBy}) => {
     const showToast = useShowToast()
     const [liked,setLiked]=useState(false)
     const [user,setUser]=useState(null)
+    const navigate = useNavigate()
     //fetch the user
     useEffect(() =>{
         const getUser = async ()=>{
             try {
                 const res = await fetch("/api/users/profile/"+postedBy)
                 const data = await res.json()
-                console.log(data)
                 if (data.error) {
                     showToast("Error",data.error,"error")
                     return
@@ -41,10 +40,14 @@ const Post = ({post,postedBy}) => {
     }
     if(!user) return null
     return (
-    <Link to={"/markzuckerberg/post/1"}>
+    <Link to={`/${user.username}/post/${post._id}`}>
         <Flex gap={3} mb={4} py={5}>
             <Flex flexDirection={"column"} alignItems={"center"}>
-                <Avatar size='md' name={user.name} src={user.profilePicture} bg={"gray.dark"}/>
+                <Avatar size='md' name={user.name} src={user.profilePicture} bg={"gray.dark"}
+                onClick={(e)=>{
+                    e.preventDefault()
+                    navigate(`/${user.username}`)
+                }}/>
                 <Box w='1px' h={"full"} bg='gray.light' mt={2} mb={1}></Box>
                 <Box position={"relative"} w={"full"}>
                     {
@@ -89,27 +92,19 @@ const Post = ({post,postedBy}) => {
             <Flex flex={1} flexDirection={"column"} gap={2}>
                 <Flex justifyContent={"space-between"}>
                     <Flex w={"full"} alignItems={"center"}>
-                        <Text fontSize={"sm"} fontWeight={"bold"}>{user?.username}</Text>
+                        <Text fontSize={"sm"} fontWeight={"bold"}
+                        onClick={(e)=>{
+                            e.preventDefault()
+                            navigate(`/${user.username}`)
+                        }}>
+                            {user?.username}
+                        </Text>
                         <Image src ="/verified.png" w={4} h={4} ml={1}></Image>
                     </Flex>
                     <Flex gap={4} alignItems={"center"} onClick={(e) => e.preventDefault()}>
-                        <Text fontSize={"sm"} color={"gray.light"}>1d</Text>
-                        <Flex>
-                            <Box>
-                                <Menu>
-                                    <MenuButton>
-                                    <BsThreeDots cursor={"pointer"}/>
-                                    </MenuButton>
-                                    <Portal>
-                                        <MenuList bg={"gray.dark"}>
-                                            <MenuItem bg={"gray.dark"} onClick={copyURL}>
-                                                Copy Link
-                                            </MenuItem>
-                                        </MenuList>
-                                    </Portal>
-                                </Menu>
-                            </Box>
-                        </Flex>
+                        <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
+                            {formatDistanceToNow(new Date(post.createdAt))} ago
+                        </Text>
                     </Flex>
                 </Flex>
 
