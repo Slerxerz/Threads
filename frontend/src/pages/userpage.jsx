@@ -10,7 +10,6 @@ const UserPage = ()=>{
     const {username}= useParams()
     const showToast = useShowToast()
     const [loading, setLoading] = useState(true);
-
     useEffect(()=>{
         const getUser = async () =>{
             try {

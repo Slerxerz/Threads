@@ -2,6 +2,26 @@ import User from "../models/userModel.js"
 import bcrypt from "bcryptjs"
 import generateTokenAndSetCookie from "../utilities/helpers/generateTokenAndSetCookie.js"
 import {v2 as cloudinary} from "cloudinary"
+import mongoose from "mongoose"
+
+const getUserProfile = async (req,res)=>{
+    //We will fetch the user profile with either username or profile id
+    const {query} = req.params
+    try {
+        let user
+        //check if the query is userId
+        if(mongoose.Types.ObjectId.isValid(query)){
+            user = await User.findOne({_id:query}).select("-password").select("-updatedAt").select("-createdAt").select("-email") 
+        } else {
+            user = await User.findOne({username:query}).select("-password").select("-updatedAt").select("-createdAt").select("-email") 
+        }
+        if (!user) return res.status(404).json({error:"User Not Found"})
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({error: error.message});
+        console.log("Error in User Profile: " + error.message);
+    }
+}
 
 const signupUser = async (req,res)=>{
     try {
@@ -152,16 +172,5 @@ const updateUser = async (req, res) => {
     }
 }
 
-const userProfile = async (req,res)=>{
-    const {username} = req.params
-    const user = await User.findOne({username}).select("-password").select("-updatedAt").select("-createdAt").select("-email") 
-    try {
-        if (!user) return res.status(404).json({error:"User Not Found"})
-        res.status(200).json(user)
-    } catch (error) {
-        res.status(500).json({error: error.message});
-        console.log("Error in User Profile: " + error.message);
-    }
-}
 
-export {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,userProfile} 
+export {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,getUserProfile} 

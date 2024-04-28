@@ -25,7 +25,7 @@ import userAtom from '../atoms/userAtom';
     const [showPassword, setShowPassword] = useState(false);
     const setAuthScreen = useSetRecoilState(authScreenAtom)
     const setUser = useSetRecoilState(userAtom)
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [inputs,setInputs] = useState({
       username:'',
@@ -103,7 +103,7 @@ import userAtom from '../atoms/userAtom';
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button
-                  loadingText="Submitting"
+                  loadingText="Logging In"
                   size="lg"
                   bg={useColorModeValue('black', 'gray.light')}
                   color={'white'}

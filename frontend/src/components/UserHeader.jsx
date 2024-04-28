@@ -46,7 +46,6 @@ const UserHeader = ({user}) => {
             setUpdating(false)
         }
     }
-
     const copyURL=()=>{
         const currentURL = window.location.href
         navigator.clipboard.writeText(currentURL).then(()=>{
