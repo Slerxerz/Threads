@@ -11,6 +11,7 @@ import {formatDistanceToNow} from "date-fns"
 const Post = ({post,postedBy}) => {
     const showToast = useShowToast()
     const [user,setUser]=useState(null)
+    const [noOfReply,setNoOfReply]=useState(post.replies.length)
     const navigate = useNavigate()
     //fetch the user
     useEffect(() =>{
@@ -47,7 +48,7 @@ const Post = ({post,postedBy}) => {
                     e.preventDefault()
                     navigate(`/${user.username}`)
                 }}/>
-                <Box w='1px' h={"full"} bg='gray.light' mt={2} mb={1}></Box>
+                <Box w='1px' h={"full"} bg='gray.light' mt={2} mb={noOfReply<1?1:7}></Box>
                 <Box position={"relative"} w={"full"}>
                     {
                         post.replies.length===0 && (<Text textAlign={"center"}>🥱</Text>)

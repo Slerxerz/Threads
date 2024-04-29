@@ -56,14 +56,14 @@ const CreatePost = () => {
 			// if (username === user.username) {
 			// 	setPosts([data, ...posts]);
 			// }
-			onClose();
-			setPostText("");
-			setImageURL("");
+      onClose();
+      setPostText("");
+      setImageURL("");
 		} catch (error) {
 			showToast("Error", error, "error");
 		} 
-        finally {
-			setLoading(false);
+      finally {
+        setLoading(false);
 		}
 	};
 
@@ -81,7 +81,7 @@ const CreatePost = () => {
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent bg={useColorModeValue("white","gray.dark")}>
           <ModalHeader>Create Post</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
