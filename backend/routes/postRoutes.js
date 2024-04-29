@@ -18,9 +18,9 @@ router.post('/create',protectRoute,createPost)
 router.delete('/delete/:id',protectRoute,deletePost)
 
 // like and unlike post
-router.post('/like/:id',protectRoute,likeUnlikePost)
+router.put('/like/:id',protectRoute,likeUnlikePost)
 
 //reply post
-router.post('/reply/:id',protectRoute,replyPost)
+router.put('/reply/:id',protectRoute,replyPost)
 
 export default router;
