@@ -84,22 +84,23 @@ import userAtom from '../atoms/userAtom';
                 value={inputs.username}
                 onChange={(e)=>setInputs({...inputs,username:e.target.value})}/>
               </FormControl>
-              <FormControl id="password" isRequired>
+              <FormControl id='password' isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
-                  <Input type={showPassword ? 'text' : 'password'} 
-                  value={inputs.password}
-                  onChange={(e)=>setInputs({...inputs,password:e.target.value})}/>
-                  <InputRightElement h={'full'}>
-                    <Button
-                      variant={'ghost'}
-                      onClick={() =>
-                        setShowPassword((showPassword) => !showPassword)
-                      }>
-                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
+								<Input
+									type={showPassword ? "text" : "password"}
+									value={inputs.password}
+									onChange={(e) => setInputs((inputs) => ({ ...inputs, password: e.target.value }))}
+								/>
+								{/* <InputRightElement h={"full"}>
+									<Button
+										variant={"ghost"}
+										onClick={() => setShowPassword((showPassword) => !showPassword)}
+									>
+										{showPassword ? <ViewIcon /> : <ViewOffIcon />}
+									</Button>
+								</InputRightElement> */}
+							</InputGroup>
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button

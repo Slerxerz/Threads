@@ -6,6 +6,9 @@ import Actions from "./Actions";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import {formatDistanceToNow} from "date-fns"
+import {DeleteIcon}  from "@chakra-ui/icons";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 
 const Post = ({post,postedBy}) => {
@@ -13,6 +16,8 @@ const Post = ({post,postedBy}) => {
     const [user,setUser]=useState(null)
     const [noOfReply,setNoOfReply]=useState(post.replies.length)
     const navigate = useNavigate()
+    const currentUser = useRecoilValue(userAtom)
+
     //fetch the user
     useEffect(() =>{
         const getUser = async ()=>{
@@ -30,7 +35,26 @@ const Post = ({post,postedBy}) => {
             }
         }
         getUser()
-    },[postedBy,showToast])
+    },
+    [postedBy,showToast])
+
+    const handleDeletePost = async (e) => {
+        try {
+            e.preventDefault()
+            if(!window.confirm("Are you sure you want to delete this post?")) return
+            const res = await fetch(`/api/posts/delete/${post._id}`,{
+                method:"DELETE"
+            })
+            const data = await res.json()
+            if (data.error) {
+                showToast("Error",data.error,"error")
+                return
+            }
+            showToast("Success",data.message,"success")
+        } catch (error) {
+            showToast("Error",error,"error" )
+        }
+    }
 
     const copyURL=()=>{
         const currentURL = window.location.href
@@ -38,7 +62,9 @@ const Post = ({post,postedBy}) => {
             showToast("Success","Post Link Copied","success")
         })
     }
+
     if(!user) return null
+
     return (
     <Link to={`/${user.username}/post/${post._id}`}>
         <Flex gap={3} mb={4} py={5}>
@@ -48,7 +74,7 @@ const Post = ({post,postedBy}) => {
                     e.preventDefault()
                     navigate(`/${user.username}`)
                 }}/>
-                <Box w='1px' h={"full"} bg='gray.light' mt={2} mb={noOfReply<1?1:7}></Box>
+                <Box w='1px' h={"full"} bg='gray.light' mt={2} mb={noOfReply<1?2:7}></Box>
                 <Box position={"relative"} w={"full"}>
                     {
                         post.replies.length===0 && (<Text textAlign={"center"}>🥱</Text>)
@@ -105,6 +131,7 @@ const Post = ({post,postedBy}) => {
                         <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
                             {formatDistanceToNow(new Date(post.createdAt))} ago
                         </Text>
+                        {currentUser?._id === user._id && <DeleteIcon onClick={handleDeletePost}/>}
                     </Flex>
                 </Flex>
 

@@ -103,7 +103,7 @@ import userAtom from '../atoms/userAtom';
                   <Input type={showPassword ? 'text' : 'password'} 
                   onChange={(e)=>setInputs({...inputs,password:e.target.value})}
                   value={inputs.password}/>
-                  <InputRightElement h={'full'}>
+                  {/* <InputRightElement h={'full'}>
                     <Button
                       variant={'ghost'}
                       onClick={() =>
@@ -111,7 +111,7 @@ import userAtom from '../atoms/userAtom';
                       }>
                       {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                     </Button>
-                  </InputRightElement>
+                  </InputRightElement> */}
                 </InputGroup>
               </FormControl>
               <Stack spacing={10} pt={2}>

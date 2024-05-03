@@ -36,7 +36,9 @@ const signupUser = async (req,res)=>{
             name,
             email,
             username,
-            password:hashedPassword})
+            password:hashedPassword,
+            profilePicture:"https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png"    
+        })
 
         await newUser.save()
 
