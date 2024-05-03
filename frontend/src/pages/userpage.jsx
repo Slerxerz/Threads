@@ -26,6 +26,23 @@ const UserPage = ()=>{
                 setLoading(false)
             }
         }
+        const getPosts = async () =>{
+            setLoading(true)
+            try {
+                const res= await fetch(`/api/posts/user/${username}`)
+                const data = await res.json()
+                if (data.error){ 
+                    showToast("Error",data.error,"error") 
+                    return
+                }
+                console.log(data)
+                // setUser({...user,posts:data})
+            } catch (error) {
+                showToast("Error",error,"error") 
+            }   finally {
+                setLoading(false)
+            }
+        }
         getUser()
     },[username,showToast])
 
@@ -40,11 +57,7 @@ const UserPage = ()=>{
     return(
         <>
         <UserHeader user={user}/>
-        <UserPost likes={1200} replies={481} postImg="/post1.png" postTitle="Let's talk about threads."/>
-        <UserPost likes={3400} replies={51} postImg="/post2.png" postTitle="Nice Tutorial!!!"/>
-        <UserPost likes={124} replies={131} postImg="/post3.png" postTitle="I love this guy."/>
-        <UserPost likes={23} replies={3} postTitle="This is my first thread."/>
-
+        
         </>
     )
 }

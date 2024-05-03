@@ -1,5 +1,5 @@
 import express from 'express';
-import {createPost,getPost,deletePost,likeUnlikePost,replyPost,getFeedPosts} from '../controllers/postController.js';
+import {createPost,getPost,deletePost,likeUnlikePost,replyPost,getFeedPosts,getUserPosts} from '../controllers/postController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
 
@@ -10,6 +10,9 @@ router.get('/feed', protectRoute,getFeedPosts)
 
 //get post
 router.get('/:id',getPost)
+
+//get posts of logged in user
+router.get('/user/:username',getUserPosts)
 
 //create post
 router.post('/create',protectRoute,createPost)

@@ -59,7 +59,7 @@ const Post = ({post,postedBy}) => {
                         name={post.replies[0].username}
                         src={post.replies[0].userProfilePicture}
                         position={"absolute"}
-                        top={"-5px"}
+                        top={"-3px"}
                         left="11.5px"
                         padding={"2px"}
                         />)
@@ -71,7 +71,7 @@ const Post = ({post,postedBy}) => {
                         src={post.replies[1].userProfilePicture}
                         position={"absolute"}
                         bottom={"0px"}
-                        right="1px"
+                        right="0px"
                         padding={"2px"}
                         />)
                     }
@@ -82,7 +82,7 @@ const Post = ({post,postedBy}) => {
                         src={post.replies[2].userProfilePicture}
                         position={"absolute"}
                         bottom={"0px"}
-                        left="0px"
+                        left="-1px"
                         padding={"2px"}
                         />)
                     }
