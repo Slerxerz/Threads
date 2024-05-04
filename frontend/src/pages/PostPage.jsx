@@ -9,19 +9,21 @@ import { Divider, Button } from "@chakra-ui/react";
 import Comment from "../components/Comment";
 import {DeleteIcon}  from "@chakra-ui/icons";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useEffect,useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import userAtom from "../atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue,useRecoilState } from "recoil";
+import postsAtom from "../atoms/postsAtom";
 
 const PostPage = () => {
     const showToast = useShowToast()
     const {user,loading} = useGetUserProfile()
-    const [post,setPost]= useState(null)
     const {pid}=useParams()
     const currentUser = useRecoilValue(userAtom)
     const navigate = useNavigate()
+    const [posts,setPosts] = useRecoilState(postsAtom)
 
+    const currentPost = posts[0]
     useEffect(() => {
         const getPost = async ()=>{
             try {
@@ -31,14 +33,14 @@ const PostPage = () => {
                     showToast("Error",data.error,"error") 
                     return
                 }else{
-                    setPost(data)
+                    setPosts([data])
                 }
             } catch (error) {
                 showToast("Error",error,"error")
             }
         }
         getPost()
-    }, [showToast,pid]);
+    }, [showToast,pid,setPosts]);
 
     if(!user && loading){
         return(
@@ -48,13 +50,13 @@ const PostPage = () => {
         )
     } 
 
-    if(!post){
+    if(!currentPost){
         return null
     }
     const handleDeletePost = async () => {
         try {
             if(!window.confirm("Are you sure you want to delete this post?")) return
-            const res = await fetch(`/api/posts/delete/${post._id}`,{
+            const res = await fetch(`/api/posts/delete/${currentPost._id}`,{
                 method:"DELETE"
             })
             const data = await res.json()
@@ -89,7 +91,7 @@ return (
             </Flex>
                 <Flex gap={4} alignItems={"center"} onClick={(e) => e.preventDefault()}>
                         <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
-                            {formatDistanceToNow(new Date(post.createdAt))} ago
+                            {formatDistanceToNow(new Date(currentPost.createdAt))} ago
                         </Text>
                         {currentUser?._id === user._id && <DeleteIcon cursor={"pointer"}onClick={handleDeletePost}/>}
                         <Flex>
@@ -110,12 +112,12 @@ return (
                         </Flex>
                     </Flex>
         </Flex>
-        <Text my={3}>{post.text}</Text>
-        {post.img && <Box borderRadius={6} overflow={"hidden"} border={"1px"} borderColor={"gray.light"}>
-            <Image src={post.img} w={"full"}/>
+        <Text my={3}>{currentPost.text}</Text>
+        {currentPost.img && <Box borderRadius={6} overflow={"hidden"} border={"1px"} borderColor={"gray.light"}>
+            <Image src={currentPost.img} w={"full"}/>
         </Box>}
         <Flex gap={3} my={3}>
-            <Actions post={post}/>
+            <Actions post={currentPost}/>
         </Flex>
         <Divider my={4}/>
         <Flex justifyContent={"space-between"}>
@@ -128,11 +130,11 @@ return (
             </Button>
         </Flex>
         <Divider my={3}></Divider>
-        {post.replies.map(reply=>(
+        {currentPost.replies.map(reply=>(
             <Comment
             key={reply._id}
             reply = {reply}
-            lastReply = {reply._id===post.replies[post.replies.length-1]._id}
+            lastReply = {reply._id===currentPost.replies[currentPost.replies.length-1]._id}
             />
         ))}
     </>

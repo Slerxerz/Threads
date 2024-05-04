@@ -162,10 +162,7 @@ const replyPost = async (req, res) => {
         post.replies.push(reply)
         await post.save()
 
-        res.status(201).json({
-            message: "Reply Posted successfully",
-            reply
-        })
+        res.status(201).json(reply)
     } catch (error) {
         res.status(500).json({
             error: error.message
