@@ -9,6 +9,8 @@ import {formatDistanceToNow} from "date-fns"
 import {DeleteIcon}  from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
+import { useRecoilState } from "recoil";
+import postsAtom from "../atoms/postsAtom";
 
 
 const Post = ({post,postedBy}) => {
@@ -17,6 +19,7 @@ const Post = ({post,postedBy}) => {
     const [noOfReply,setNoOfReply]=useState(post.replies.length)
     const navigate = useNavigate()
     const currentUser = useRecoilValue(userAtom)
+    const [posts,setPosts] = useRecoilState(postsAtom)
 
     //fetch the user
     useEffect(() =>{
@@ -51,7 +54,7 @@ const Post = ({post,postedBy}) => {
                 return
             }
             showToast("Success",data.message,"success")
-            window.location.reload();
+            setPosts(posts.filter((p) => p._id!==post._id))
         } catch (error) {
             showToast("Error",error,"error" )
         }

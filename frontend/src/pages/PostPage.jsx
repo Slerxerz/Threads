@@ -31,7 +31,6 @@ const PostPage = () => {
                     showToast("Error",data.error,"error") 
                     return
                 }else{
-                    console.log(data)
                     setPost(data)
                 }
             } catch (error) {
