@@ -51,6 +51,7 @@ const Post = ({post,postedBy}) => {
                 return
             }
             showToast("Success",data.message,"success")
+            window.location.reload();
         } catch (error) {
             showToast("Error",error,"error" )
         }

@@ -10,7 +10,7 @@ import Comment from "../components/Comment";
 import {DeleteIcon}  from "@chakra-ui/icons";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useEffect,useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 
@@ -20,6 +20,7 @@ const PostPage = () => {
     const [post,setPost]= useState(null)
     const {pid}=useParams()
     const currentUser = useRecoilValue(userAtom)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const getPost = async ()=>{
@@ -51,9 +52,8 @@ const PostPage = () => {
     if(!post){
         return null
     }
-    const handleDeletePost = async (e) => {
+    const handleDeletePost = async () => {
         try {
-            e.preventDefault()
             if(!window.confirm("Are you sure you want to delete this post?")) return
             const res = await fetch(`/api/posts/delete/${post._id}`,{
                 method:"DELETE"
@@ -64,11 +64,12 @@ const PostPage = () => {
                 return
             }
             showToast("Success",data.message,"success")
+            navigate(`/${user.username}`)
         } catch (error) {
             showToast("Error",error,"error" )
         }
     }
-    
+
     const copyURL=()=>{
         const currentURL = window.location.href
         navigator.clipboard.writeText(currentURL).then(()=>{
@@ -91,7 +92,7 @@ return (
                         <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
                             {formatDistanceToNow(new Date(post.createdAt))} ago
                         </Text>
-                        {currentUser?._id === user._id && <DeleteIcon onClick={handleDeletePost}/>}
+                        {currentUser?._id === user._id && <DeleteIcon cursor={"pointer"}onClick={handleDeletePost}/>}
                         <Flex>
                             <Box>
                                 <Menu>
@@ -128,13 +129,13 @@ return (
             </Button>
         </Flex>
         <Divider my={3}></Divider>
-        {/* <Comment
-            comment="Looks really good."
-            createdAt="2d"
-            likes={100}
-            username="johndoe"
-            userAvatar="https://bit.ly/dan-abramov"
-        /> */}
+        {post.replies.map(reply=>(
+            <Comment
+            key={reply._id}
+            reply = {reply}
+            lastReply = {reply._id===post.replies[post.replies.length-1]._id}
+            />
+        ))}
     </>
     );
 };
