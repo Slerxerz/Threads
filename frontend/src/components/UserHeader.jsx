@@ -3,11 +3,14 @@ import {BsInstagram } from "react-icons/bs"
 import { CgMoreO } from "react-icons/cg"
 import {useRecoilValue } from "recoil"
 import userAtom from '../atoms/userAtom';
+import {FiLogOut} from "react-icons/fi"
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react"
 import useShowToast from "../hooks/useShowToast"
+import useLogout from "../hooks/useLogout";
 
 const UserHeader = ({user}) => {
+    const logout = useLogout()
     const showtoast = useShowToast()
     const currentUser = useRecoilValue(userAtom) // this is the user that logged in 
     const [following,setFollowing] = useState(user.followers.includes(currentUser?._id))
@@ -85,9 +88,16 @@ const UserHeader = ({user}) => {
         </Flex>
         <Text>{user.bio}</Text>
         {currentUser?._id === user._id && (
+            <Flex w={"full"} justifyContent={"space-between"}>
 				<Link as={RouterLink} to='/update'>
 					<Button size={"sm"} bg={useColorModeValue("gray.300","gray.dark")}>Update Profile</Button>
 				</Link>
+                <Button
+                    size={"sm"} bg={useColorModeValue("gray.300","gray.dark")} onClick={logout}>
+                    <FiLogOut size={20}/>
+                </Button>
+            </Flex>
+                
 	    )}
         {currentUser?._id !== user._id && (
 				<Button size={"sm"} onClick={handleFollowUnfollow} isLoading={updating} bg={useColorModeValue("gray.300","gray.dark")}>

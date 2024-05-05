@@ -1,3 +1,6 @@
+//Not using this because we created a hook containing the logout functionality 
+//and added the logout button to the Header.jsx
+
 import { Button,useColorModeValue } from "@chakra-ui/react"
 import { useSetRecoilState } from "recoil"
 import userAtom from "../atoms/userAtom"
@@ -7,7 +10,7 @@ import {FiLogOut} from "react-icons/fi"
 const LogoutButton = () => {
     const setUser = useSetRecoilState(userAtom)
     const showToast = useShowToast()
-    
+
     const handleLogout = async () => {
        try {
            //fetch request
