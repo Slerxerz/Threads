@@ -3,9 +3,11 @@ import { useEffect } from "react"
 import useShowToast from "../hooks/useShowToast"
 import { useState } from "react"
 import Post from "../components/Post"
+import { useRecoilState } from "recoil"
+import postsAtom from "../atoms/postsAtom"
 
 const HomePage= () => {
-    const [posts,setPosts ]= useState([])
+    const [posts,setPosts ]= useRecoilState(postsAtom)
     const [isloading,setloading] = useState(true)
 
     const showToast = useShowToast()
@@ -27,7 +29,7 @@ const HomePage= () => {
             }
         }
         getFeedPost()
-    },[showToast])
+    },[showToast,setPosts])
     return (
         <>
             {!isloading && posts.length==0 && <h1>Follow some users to view the posts.</h1>}
