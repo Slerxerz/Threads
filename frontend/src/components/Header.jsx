@@ -31,11 +31,11 @@ const Header = () => {
         />
         {user && (
         <Flex alignItems={"center"} gap={4}>
-          <Link as={RouterLink} to ={`/chat`}>
-            <BsFillChatQuoteFill size={34}/>
-          </Link>
           <Link as={RouterLink} to ={`/${user.username}`}>
             <RxAvatar size={36}/>
+          </Link>
+          <Link as={RouterLink} to ={`/chat`}>
+            <BsFillChatQuoteFill size={34}/>
           </Link>
         </Flex>
         )}

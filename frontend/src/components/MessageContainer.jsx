@@ -1,5 +1,6 @@
 import { Flex, useColorModeValue,Avatar,Text, Image, Divider,Box,Skeleton,SkeletonCircle } from "@chakra-ui/react"
 import Message from "./Message"
+import MessageInput from "./MessageInput"
 
 const MessageContainer = () => {
   return (
@@ -18,8 +19,8 @@ const MessageContainer = () => {
 
         <Divider/>
         
-        <Flex flexDir={"column"} gap={4} my={4}
-        height={"400px"} overflowY={"scroll"}>
+        <Flex flexDir={"column"} gap={4} my={4} px={2}
+        height={"400px"} overflowY={"auto"}>
 
             {false && (
                 [0,1,2,3,4,5].map((_,i) =>(
@@ -42,6 +43,7 @@ const MessageContainer = () => {
             <Message ownMessage={true}/>
 
         </Flex>
+        <MessageInput/>
     </Flex>
   )
 }
