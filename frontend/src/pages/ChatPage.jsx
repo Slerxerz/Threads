@@ -1,6 +1,7 @@
-import { Box, Flex,Text,Input,Button,useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex,Text,Input,Button,useColorModeValue,SkeletonCircle,Skeleton } from '@chakra-ui/react'
 import React from 'react'
 import {SearchIcon} from "@chakra-ui/icons"
+import Conversation from '../components/Conversation'
 
 const ChatPage = () => {
   return (
@@ -31,7 +32,24 @@ const ChatPage = () => {
 							</Button>
 						</Flex>
 					</form>
-				</Flex>
+			{false && (
+				[0,1,2,3,4,5].map((_,i) =>(
+					<Flex key={i} alignItems={"center"} gap={4} padding={1} borderRadius={"md"}>
+						<Box>
+							<SkeletonCircle size={"10"}/>
+						</Box>
+						<Flex flexDirection={"column"} w={"full"} gap={3}>
+							<Skeleton h={"10px"} w={"80px"}/>
+							<Skeleton h={"8px"} w={"90%"}/>
+						</Flex>
+					</Flex>
+				))
+			)}
+
+			<Conversation/>
+
+		</Flex>
+		<Flex flex={70}>Message Container</Flex>
       </Flex>
     </Box>
   )
