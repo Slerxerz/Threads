@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import connectDB from './database/connectDB.js';
 import cookieParser from 'cookie-parser'
 import userRoutes from './routes/userRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import {v2 as cloudinary} from 'cloudinary'
 
@@ -27,6 +28,7 @@ app.use(cookieParser())
 //Routes
 app.use("/api/users",userRoutes);
 app.use("/api/posts",postRoutes)
+app.use("/api/message",messageRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
