@@ -68,4 +68,21 @@ async function getMessages(req, res) {
     }
 }
 
-export {sendMessage,getMessages}
+async function getConversations(req, res) {
+    const userId = req.user._id
+    console.log("User ID for fetching conversations:", userId);
+    try {
+        const conversations = await Conversation.find({participants:userId}).populate({
+            path:"participants",
+            select:"username profilePicture"
+        })
+        res.status(200).json(conversations)
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        })
+        console.log("Error in Get Conversations",error)
+    }
+}
+
+export {sendMessage,getMessages,getConversations}
