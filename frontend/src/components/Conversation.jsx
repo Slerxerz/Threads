@@ -1,12 +1,15 @@
-import { Avatar, AvatarBadge, Flex, Stack, Text, WrapItem, useColorModeValue, Image } from '@chakra-ui/react'
-import { useRecoilValue } from 'recoil'
+import { Avatar, AvatarBadge, Flex, Stack, Text, WrapItem, useColorModeValue, Image, useColorMode } from '@chakra-ui/react'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import {BsCheck2All} from 'react-icons/bs'
+import { selectedConversationAtom } from '../atoms/messagesAtom'
 
 const Conversation = ({conversation}) => {
     const user = conversation.participants[0]
     const currentUser = useRecoilValue(userAtom)
     const lastMessage = conversation.lastMessage
+    const [selectedConversation,setselectedConversation] = useRecoilState(selectedConversationAtom)
+    const {colorMode} = useColorMode()
   return (
     <Flex
     gap={4} alignItems={"center"} p={"1"} _hover={{
@@ -14,6 +17,13 @@ const Conversation = ({conversation}) => {
         bg: useColorModeValue("gray.400", "gray.dark"),
         color: useColorModeValue("white", "gray.light"),
     }}
+    onClick={()=>setselectedConversation({
+        _id: conversation._id,
+        userId:user._id,
+        username:user.username,
+        profilePicture:user.profilePicture,
+    })}
+    bg={selectedConversation?._id === conversation._id?(colorMode==="light"?"gray.400": "gray.dark"):""}
     borderRadius={"md"}
     >
         <WrapItem>
