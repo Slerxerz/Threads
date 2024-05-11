@@ -1,8 +1,36 @@
 import { Flex, useColorModeValue,Avatar,Text, Image, Divider,Box,Skeleton,SkeletonCircle } from "@chakra-ui/react"
 import Message from "./Message"
 import MessageInput from "./MessageInput"
+import { useEffect, useState } from "react"
+import { useRecoilState } from 'recoil'
+import useShowToast from "../hooks/useShowToast"
+import { selectedConversationAtom } from '../atoms/messagesAtom'
 
 const MessageContainer = () => {
+    const showToast = useShowToast()
+	const [selectedConversation,setSelectedConversation] = useRecoilState(selectedConversationAtom)
+    const [loadingMessages,useLoadingMessages] = useState(true) 
+    const [messages,setMessages] = useState([])
+
+    useEffect(()=>{
+        const getMessages = async()=>{
+            try {
+                const res = await fetch(`api/messages/${selectedConversation.userId}`)
+                const data = await res.json()
+                if(data.error){
+                    showToast("Error",data.error,"error")
+                    return
+                }
+                setMessages(data)
+            } catch (error) {
+				showToast("Error",error,"error")
+            } finally {
+                useLoadingMessages(false)
+            }
+        }
+        getMessages()
+    },[showToast,selectedConversation.userId])
+
   return (
     <Flex flex={70} bg={useColorModeValue("gray.200","gray.dark")}
             borderRadius={"md"}
