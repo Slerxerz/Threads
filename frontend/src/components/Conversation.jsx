@@ -21,7 +21,7 @@ const Conversation = ({conversation}) => {
         _id: conversation._id,
         userId:user._id,
         username:user.username,
-        profilePicture:user.profilePicture,
+        userprofilePicture:user.profilePicture,
     })}
     bg={selectedConversation?._id === conversation._id?(colorMode==="light"?"gray.400": "gray.dark"):""}
     borderRadius={"md"}
