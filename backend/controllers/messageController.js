@@ -70,11 +70,15 @@ async function getMessages(req, res) {
 
 async function getConversations(req, res) {
     const userId = req.user._id
-    console.log("User ID for fetching conversations:", userId);
     try {
         const conversations = await Conversation.find({participants:userId}).populate({
             path:"participants",
             select:"username profilePicture"
+        })
+        //remove the current user from the participants array
+        conversations.forEach(conversation => {
+            conversation.participants = conversation.participants.filter(
+                participant => participant._id.toString()!==userId.toString())
         })
         res.status(200).json(conversations)
     } catch (error) {

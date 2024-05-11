@@ -1,11 +1,39 @@
 import { Box, Flex,Text,Input,Button,useColorModeValue,SkeletonCircle,Skeleton } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {SearchIcon} from "@chakra-ui/icons"
 import Conversation from '../components/Conversation'
+import useShowToast from "../hooks/useShowToast"
 import {GiConversation} from 'react-icons/gi'
 import MessageContainer from '../components/MessageContainer'
+import { useRecoilState } from 'recoil'
+import { conversationsAtom } from '../atoms/messagesAtom'
 
 const ChatPage = () => {
+    const showToast = useShowToast()
+	const[loadingConversation,setloadingConversation] = useState(true)
+	const [conversations,setConversations] = useRecoilState(conversationsAtom)
+
+	useEffect(()=>{
+		const getConversations = async () => {
+			try {
+				const res = await fetch("/api/messages/conversations")
+                const data = await res.json()
+                if(data.error){
+                    showToast("Error",data.error,"error")
+                    return
+                }
+                console.log(data)
+                setConversations(data)
+				
+			} catch (error) {
+				showToast("Error",error,"error")
+			} finally{
+				setloadingConversation(false)
+			}
+		}
+		getConversations()
+	},[showToast,setConversations])
+
   return (
     <Box position={"absolute"} left={"50%"} w={{
       base:"100%",
@@ -34,8 +62,8 @@ const ChatPage = () => {
 							</Button>
 						</Flex>
 					</form>
-			{false && (
-				[0,1,2,3,4,5].map((_,i) =>(
+			{loadingConversation && (
+				[0,1,2,3,4].map((_,i) =>(
 					<Flex key={i} alignItems={"center"} gap={4} padding={1} borderRadius={"md"}>
 						<Box>
 							<SkeletonCircle size={"10"}/>
@@ -48,7 +76,11 @@ const ChatPage = () => {
 				))
 			)}
 
-			<Conversation/>
+			{!loadingConversation && (
+				conversations.map(conversation =>(
+                    <Conversation key={conversation._id} conversation={conversation}/>
+                ))
+			)}
 
 		</Flex>
 		{/* <Flex flex={70} borderRadius={"md"} p={2} flexDirection={"column"} alignItems={"center"} justifyContent={"center"} height={"400px"}>

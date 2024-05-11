@@ -1,6 +1,12 @@
 import { Avatar, AvatarBadge, Flex, Stack, Text, WrapItem, useColorModeValue, Image } from '@chakra-ui/react'
+import { useRecoilValue } from 'recoil'
+import userAtom from '../atoms/userAtom'
+import {BsCheck2All} from 'react-icons/bs'
 
-const Conversation = () => {
+const Conversation = ({conversation}) => {
+    const user = conversation.participants[0]
+    const currentUser = useRecoilValue(userAtom)
+    const lastMessage = conversation.lastMessage
   return (
     <Flex
     gap={4} alignItems={"center"} p={"1"} _hover={{
@@ -16,17 +22,18 @@ const Conversation = () => {
                 sm:"sm",
                 md: "md"
                 }}
-                src='https://bit.ly/borken-link'
+                src={user.profilePicture}
             >
             <AvatarBadge boxSize={"1em"} bg={"green.500"}/>
             </Avatar>
         </WrapItem>
         <Stack direction={"column"} fontSize={"sm"}>
             <Text fontWeight={"700"} display={"flex"} alignItems={"center"}>
-                johndoe <Image src="/verified.png" w={4} h={4} ml={1}/>
+                {user.username} <Image src="/verified.png" w={4} h={4} ml={1}/>
             </Text>
             <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
-                Hello Some Message ...
+                {currentUser._id === lastMessage.sender? <BsCheck2All size={16}/> : ''}
+                {lastMessage.text.length>18 ? lastMessage.text.substring(0,18)+"...":lastMessage.text}
             </Text>
         </Stack>
     </Flex>
