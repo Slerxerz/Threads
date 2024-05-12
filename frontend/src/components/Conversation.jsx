@@ -14,7 +14,7 @@ const Conversation = ({conversation}) => {
     <Flex
     gap={4} alignItems={"center"} p={"1"} _hover={{
         cursor: "pointer",
-        bg: useColorModeValue("gray.400", "gray.dark"),
+        bg: useColorModeValue("gray.300", "gray.dark"),
         color: useColorModeValue("white", "gray.light"),
     }}
     onClick={()=>setselectedConversation({
@@ -23,7 +23,7 @@ const Conversation = ({conversation}) => {
         username:user.username,
         userprofilePicture:user.profilePicture,
     })}
-    bg={selectedConversation?._id === conversation._id?(colorMode==="light"?"gray.400": "gray.dark"):""}
+    bg={selectedConversation?._id === conversation._id?(colorMode==="light"?"gray.300": "gray.dark"):""}
     borderRadius={"md"}
     >
         <WrapItem>

@@ -10,12 +10,14 @@ import userAtom from "../atoms/userAtom"
 const MessageContainer = () => {
     const showToast = useShowToast()
 	const [selectedConversation,setSelectedConversation] = useRecoilState(selectedConversationAtom)
-    const [loadingMessages,useLoadingMessages] = useState(true) 
+    const [loadingMessages,setLoadingMessages] = useState(true) 
     const [messages,setMessages] = useState([])
     const currentUser = useRecoilValue(userAtom)
 
     useEffect(()=>{
         const getMessages = async()=>{
+            setLoadingMessages(true)
+            setMessages([])
             try {
                 const res = await fetch(`api/messages/${selectedConversation.userId}`)
                 const data = await res.json()
@@ -27,7 +29,7 @@ const MessageContainer = () => {
             } catch (error) {
 				showToast("Error",error,"error")
             } finally {
-                useLoadingMessages(false)
+                setLoadingMessages(false)
             }
         }
         getMessages()
@@ -73,7 +75,7 @@ const MessageContainer = () => {
                 ))
             )}
         </Flex>
-        <MessageInput/>
+        <MessageInput setMessages={setMessages}/>
     </Flex>
   )
 }
