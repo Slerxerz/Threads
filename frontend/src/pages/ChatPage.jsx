@@ -51,6 +51,7 @@ const ChatPage = () => {
 			const messagingYourself = searchedUser._id === currentUser._id
 			if(messagingYourself){
 				showToast("Error","You cannot message yourself.","error")
+				return
 			}
 
 			const convAlreadyExists = conversations.find(conversation => conversation.participants[0]._id === searchedUser._id)
@@ -64,7 +65,20 @@ const ChatPage = () => {
 				return
 			}
 			// if the user doesnt already have a conversation with this searched user
-			
+			const mockConversation = {
+				mock:true,
+				lastMessage:{
+					text:'',
+					sender:''
+				},
+				_id:Date.now(),
+				participants:[{
+					_id:searchedUser._id,
+					username:searchedUser.username,
+                    profilePicture:searchedUser.profilePicture
+				}]
+			}
+			setConversations((prevConv)=>[...prevConv, mockConversation])
 
 		} catch (error) {
 			showToast("Error",error,"error")
