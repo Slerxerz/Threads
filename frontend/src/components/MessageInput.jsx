@@ -52,7 +52,7 @@ const MessageInput = ({setMessages}) => {
     }
   }
   return (
-    <form >
+    <form onSubmit={handleSendMessage}>
         <InputGroup>
             <Input w={"full"}
             placeholder='Type a message' onChange={(e)=> setMessageText(e.target.value)}

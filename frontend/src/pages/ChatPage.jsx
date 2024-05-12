@@ -5,14 +5,18 @@ import Conversation from '../components/Conversation'
 import useShowToast from "../hooks/useShowToast"
 import {GiConversation} from 'react-icons/gi'
 import MessageContainer from '../components/MessageContainer'
-import { useRecoilState } from 'recoil'
+import { useRecoilState,useRecoilValue } from 'recoil'
 import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAtom'
+import userAtom from '../atoms/userAtom'
 
 const ChatPage = () => {
     const showToast = useShowToast()
 	const[loadingConversation,setloadingConversation] = useState(true)
 	const [conversations,setConversations] = useRecoilState(conversationsAtom)
 	const [selectedConversation,setSelectedConversation] = useRecoilState(selectedConversationAtom)
+	const [searchText,setSearchText] = useState('')
+	const [loadingUser,setLoadingUser] = useState(false)
+	const currentUser = useRecoilValue(userAtom)
 
 	useEffect(()=>{
 		const getConversations = async () => {
@@ -32,6 +36,42 @@ const ChatPage = () => {
 		}
 		getConversations()
 	},[showToast,setConversations])
+
+	const handleConvSearch = async (e)=>{
+		e.preventDefault()
+		setLoadingUser(true)
+		try {
+			const res = await fetch(`/api/users/profile/${searchText}`)
+            const searchedUser = await res.json()
+            if(searchedUser.error){
+                showToast("Error",searchedUser.error,"error")
+                return
+            }
+
+			const messagingYourself = searchedUser._id === currentUser._id
+			if(messagingYourself){
+				showToast("Error","You cannot message yourself.","error")
+			}
+
+			const convAlreadyExists = conversations.find(conversation => conversation.participants[0]._id === searchedUser._id)
+			if(convAlreadyExists){
+				setSelectedConversation({
+					_id: convAlreadyExists._id,
+					userId:searchedUser._id,
+                    username:searchedUser.username,
+                    userprofilePicture:searchedUser.profilePicture,
+				})
+				return
+			}
+			// if the user doesnt already have a conversation with this searched user
+			
+
+		} catch (error) {
+			showToast("Error",error,"error")
+		} finally {
+			setLoadingUser(false)
+		}
+	}
 
   return (
     <Box position={"absolute"} left={"50%"} w={{
@@ -53,10 +93,10 @@ const ChatPage = () => {
 					<Text fontWeight={700} color={useColorModeValue("gray.600", "gray.400")}>
 						Your Conversations
 					</Text>
-					<form >
+					<form onSubmit={handleConvSearch}>
 						<Flex alignItems={"center"} gap={2}>
-							<Input placeholder='Search for a user'/>
-							<Button size={"sm"} >
+							<Input placeholder='Search for a user' onChange={(e)=>setSearchText(e.target.value)}/>
+							<Button size={"sm"} onClick={handleConvSearch} isLoading={loadingUser}>
 								<SearchIcon />
 							</Button>
 						</Flex>
