@@ -2,7 +2,7 @@ import { Flex, useColorModeValue,Avatar,Text, Image, Divider,Box,Skeleton,Skelet
 import Message from "./Message"
 import MessageInput from "./MessageInput"
 import { useEffect, useRef, useState } from "react"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import useShowToast from "../hooks/useShowToast"
 import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAtom'
 import userAtom from "../atoms/userAtom"
@@ -10,7 +10,7 @@ import { useSocket } from "../context/SocketContext"
 
 const MessageContainer = () => {
     const showToast = useShowToast()
-	const [selectedConversation,setSelectedConversation] = useRecoilState(selectedConversationAtom)
+	const selectedConversation = useRecoilValue(selectedConversationAtom)
     const [loadingMessages,setLoadingMessages] = useState(true) 
     const [messages,setMessages] = useState([])
     const currentUser = useRecoilValue(userAtom)
@@ -20,10 +20,12 @@ const MessageContainer = () => {
 
     useEffect(() =>{
         socket.on("newMessage",(message) => {
-            setMessages(messages => [...messages,message])
+            if(selectedConversation._id === message.conversationId) {
+                setMessages(prev => [...prev,message])
+            }
             setConversations((prev)=>{
                 const updatedConv  = prev.map(conversation => {
-                    if(conversation._id === selectedConversation._id){
+                    if(conversation._id === message.conversationId){
                         return {
                            ...conversation,
                             lastMessage:{
@@ -38,7 +40,14 @@ const MessageContainer = () => {
             })
         })
         return ()=> socket.off("newMessage")
-    },[socket])
+    },[socket,selectedConversation,setConversations])
+
+    useEffect(()=>{
+        const lastMessageIsFromOtherUser = messages[messages.length-1].sender !== currentUser._id
+        if(lastMessageIsFromOtherUser){
+
+        }
+    },[])
 
     useEffect(()=>{
         messageEndRef.current?.scrollIntoView({behavior: "smooth"})
@@ -64,7 +73,7 @@ const MessageContainer = () => {
             }
         }
         getMessages()
-    },[showToast,selectedConversation.userId])
+    },[showToast,selectedConversation.userId,selectedConversation.mock])
 
   return (
     <Flex flex={70} bg={useColorModeValue("gray.200","gray.dark")}
