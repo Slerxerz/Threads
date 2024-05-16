@@ -12,7 +12,7 @@ const Message = ({ownMessage,message}) => {
     <>  
     {ownMessage ?(
         <Flex gap={2} alignSelf={"flex-end"}>
-          <Flex bg={useColorModeValue("green.400","green.400")} maxW={"350px"} p={1} borderRadius={"md"}>
+          <Flex bg={useColorModeValue("green.400","green.600")} maxW={"350px"} p={1} borderRadius={"md"}>
             <Text ml={1} color={"white"}>{message.text}</Text>
             <Box alignSelf={"flex-end"} ml={1} color={message.seen? "blue.400":""} fontWeight={"bold"}>
               <BsCheck2All size={16} />
