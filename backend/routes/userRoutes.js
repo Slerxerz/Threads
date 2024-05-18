@@ -1,11 +1,14 @@
 import express from 'express';
-import {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,getUserProfile} from '../controllers/userController.js';
+import {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,getUserProfile,getSuggestedUsers} from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js'
 
 const router = express.Router();
 
 //User Profile route
 router.get('/profile/:query', getUserProfile);
+
+//Get Suggested Profile
+router.get('/suggested',protectRoute,getSuggestedUsers);
 
 //signup route
 router.post('/signup', signupUser); 
