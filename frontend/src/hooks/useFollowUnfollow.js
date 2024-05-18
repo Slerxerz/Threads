@@ -7,45 +7,41 @@ const useFollowUnfollow = (user) => {
 	const currentUser = useRecoilValue(userAtom);
 	const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
 	const [updating, setUpdating] = useState(false);
-	const showToast = useShowToast();
+	const showtoast = useShowToast();
 
-	const handleFollowUnfollow = async () => {
-		if (!currentUser) {
-			showToast("Error", "Please login to follow", "error");
-			return;
-		}
-		if (updating) return;
-
-		setUpdating(true);
-		try {
-			const res = await fetch(`/api/users/follow/${user._id}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const data = await res.json();
-			if (data.error) {
-				showToast("Error", data.error, "error");
-				return;
-			}
-
-			if (following) {
-				showToast("Success", `Unfollowed ${user.name}`, "success");
-				user.followers.pop(); // simulate removing from followers
-			} else {
-				showToast("Success", `Followed ${user.name}`, "success");
-				user.followers.push(currentUser?._id); // simulate adding to followers
-			}
-			setFollowing(!following);
-
-			console.log(data);
-		} catch (error) {
-			showToast("Error", error, "error");
-		} finally {
-			setUpdating(false);
-		}
-	};
+	const handleFollowUnfollow = async() =>{
+        if(!currentUser){
+            showtoast("Error","Please login to follow","error")
+            return
+        }
+        if(updating) return
+        setUpdating(true)
+        try {
+            const res = await fetch(`/api/users/follow/${user._id}`,{
+                method:"GET",
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
+            const data = await res.json()
+            if(data.error){
+                showtoast("Error",data.error,"error")
+                return
+            }
+            if(following){
+                showtoast("Success", `Unfollowed ${user.name}`,"success")
+                user.followers.pop() //simulate removing followers, only in the client side
+            } else {
+                showtoast("Success", `Followed ${user.name}`,"success")
+                user.followers.push(currentUser?._id) //simulate adding followers, only in the client side
+            }
+            setFollowing(!following)
+        } catch (error) {
+            showtoast("Error",error,"error")
+        } finally {
+            setUpdating(false)
+        }
+    }
 
 	return { handleFollowUnfollow, updating, following };
 };
