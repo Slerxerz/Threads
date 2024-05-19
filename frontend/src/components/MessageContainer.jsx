@@ -1,5 +1,6 @@
 import { Flex, useColorModeValue,Avatar,Text, Image, Divider,Box,Skeleton,SkeletonCircle } from "@chakra-ui/react"
 import Message from "./Message"
+import messageSound from "../assets/sounds/message.mp3"	
 import MessageInput from "./MessageInput"
 import { useEffect, useRef, useState } from "react"
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -22,6 +23,10 @@ const MessageContainer = () => {
         socket.on("newMessage",(message) => {
             if(selectedConversation._id === message.conversationId) {
                 setMessages(prev => [...prev,message])
+            }
+            if(!document.hasFocus()){
+                const sound = new Audio(messageSound)
+                sound.play()
             }
             setConversations((prev)=>{
                 const updatedConv  = prev.map(conversation => {

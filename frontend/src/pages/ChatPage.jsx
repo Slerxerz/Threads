@@ -159,12 +159,15 @@ const ChatPage = () => {
 			)}
 
 		</Flex>
+		
 		{!selectedConversation._id && (<Flex flex={70} borderRadius={"md"} p={2} flexDirection={"column"} alignItems={"center"} justifyContent={"center"} height={"400px"}>
 			<GiConversation size={100}/>
 			<Text fontSize={20}>Select a User to start conversation</Text>
 		</Flex>)}
-			{selectedConversation._id && <MessageContainer/>}
-      </Flex>
+		
+		{selectedConversation._id && <MessageContainer/>}
+      
+	  </Flex>
     </Box>
   )
 }
