@@ -1,5 +1,5 @@
 import express from 'express';
-import {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,getUserProfile,getSuggestedUsers} from '../controllers/userController.js';
+import {signupUser,loginUser,logoutUser,followUnfollowUser,updateUser,getUserProfile,freezeAccount,getSuggestedUsers} from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js'
 
 const router = express.Router();
@@ -24,6 +24,9 @@ router.get('/follow/:id', protectRoute, followUnfollowUser);
 
 //update route
 router.put('/update/:id', protectRoute, updateUser);
+
+//freeze route
+router.put('/freeze', protectRoute, freezeAccount);
 
 
 export default router
