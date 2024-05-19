@@ -27,7 +27,6 @@ useEffect(()=>{
 
     return () => socket && socket.close()
 },[user?._id])
-console.log(onlineUsers,"Online users")
 return(
     <SocketContext.Provider value={{socket,onlineUsers}}>
         {children}
