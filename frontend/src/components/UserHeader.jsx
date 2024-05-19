@@ -5,7 +5,7 @@ import {useRecoilValue } from "recoil"
 import userAtom from '../atoms/userAtom';
 import {FiLogOut} from "react-icons/fi"
 import { Link as RouterLink } from "react-router-dom";
-import { useState } from "react"
+import {MdOutlineSettings} from "react-icons/md"
 import useShowToast from "../hooks/useShowToast"
 import useLogout from "../hooks/useLogout";
 import useFollowUnfollow from "../hooks/useFollowUnfollow.js";
@@ -60,10 +60,18 @@ const UserHeader = ({user}) => {
 				<Link as={RouterLink} to='/update'>
 					<Button size={"sm"} bg={useColorModeValue("gray.300","gray.dark")}>Update Profile</Button>
 				</Link>
+                <Flex w={"full"} gap={4} justify={"right"}>
+                <Link as={RouterLink} to='/settings'>
+                <Button
+                    size={"sm"} bg={useColorModeValue("gray.300","gray.dark")}>
+                    <MdOutlineSettings size={20}/>
+                </Button>
+                </Link>
                 <Button
                     size={"sm"} bg={useColorModeValue("gray.300","gray.dark")} onClick={logout}>
                     <FiLogOut size={20}/>
                 </Button>
+                </Flex>
             </Flex>
                 
 	    )}

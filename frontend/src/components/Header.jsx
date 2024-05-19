@@ -6,7 +6,6 @@ import {Link as RouterLink} from "react-router-dom"
 import {RxAvatar} from "react-icons/rx"
 import authScreenAtom from "../atoms/authAtom";
 import { BsFillChatQuoteFill } from "react-icons/bs";
-
 const Header = () => {
     const {colorMode,toggleColorMode} = useColorMode()
     const user = useRecoilValue(userAtom)
@@ -16,7 +15,7 @@ const Header = () => {
     <Flex justify={"space-around"} mt="6" mb="12">
 
       {user && <Link as={RouterLink} to ="/">
-        <AiFillHome size={36}/>
+        <AiFillHome size={28}/>
       </Link>}
       {!user && <Link as={RouterLink} to ={"/auth"} onClick={()=>setAuthScreen('login')}>
         Login
@@ -32,10 +31,10 @@ const Header = () => {
         {user && (
         <Flex alignItems={"center"} gap={4}>
           <Link as={RouterLink} to ={`/${user.username}`}>
-            <RxAvatar size={36}/>
+            <RxAvatar size={28}/>
           </Link>
           <Link as={RouterLink} to ={`/chat`}>
-            <BsFillChatQuoteFill size={34}/>
+            <BsFillChatQuoteFill size={28}/>
           </Link>
         </Flex>
         )}
