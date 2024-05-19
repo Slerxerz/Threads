@@ -15,7 +15,7 @@ const user = useRecoilValue(userAtom)
 const [onlineUsers,setOnlineUsers] = useState([])
 
 useEffect(()=>{
-    const socket = io("http://localhost:5000",{
+    const socket = io("/" ,{  // in development it should be localhost://5000 not '/'
         query:{
             userId:user?._id
         }}
